@@ -12,12 +12,19 @@ public class GameController : MonoBehaviour
 	private long lastTicks;
 	private int wave;
 
+	public AudioSource audioSource;
+
+	public AudioClip tickSound;
+	public AudioClip healSound;
+	public AudioClip hitSound;
+
 	void Start()
 	{
 		lastTicks = DateTime.Now.Ticks;
 		wave = 1;
 		GameData.instance.gamePhase = 1;
 		spawnFruit(4);
+		audioSource.clip = tickSound;
 	}
 
 	// Update is called once per frame
@@ -44,6 +51,8 @@ public class GameController : MonoBehaviour
 				spawnFruit(1);
 			}
 		}
+
+		audioSource.Play();
 	}
 
 	void spawnFruit(int count)

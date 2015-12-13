@@ -7,19 +7,13 @@ public class PlayerController : MonoBehaviour
 	public int currentHealth;
 	public int maxHealth;
 
-	public AudioSource audioSource;
-
-	public AudioClip tickSound;
-	public AudioClip healSound;
-	public AudioClip hitSound;
-
-	public AudioClip nextSound;
-
 	private List<GameObject> bodyPieces = new List<GameObject>(); 
 	private List<Vector3> previousLocations = new List<Vector3>();
 
 	public GameObject background;
 	public GameObject bodyPiecePrefab;
+
+	public GameObject gameController;
 
 	private RectTransform myRectTransform;
 
@@ -142,10 +136,6 @@ public class PlayerController : MonoBehaviour
 		{
 			previousLocations = previousLocations.GetRange(0, bodyPieces.Count + 1);
 		}
-
-		audioSource.clip = nextSound;
-		audioSource.Play();
-		nextSound = tickSound;
 	}
 
 	void Update()
@@ -224,7 +214,8 @@ public class PlayerController : MonoBehaviour
 				other.gameObject.GetComponent<EnemyController>().randomPosition();
             }
 
-			nextSound = healSound;
+			gameController.GetComponent<GameController>().audioSource.Stop();
+			gameController.GetComponent<GameController>().audioSource.PlayOneShot(gameController.GetComponent<GameController>().healSound);
 		}
 
 		DamageController damage = other.gameObject.GetComponent<DamageController>();
@@ -242,8 +233,9 @@ public class PlayerController : MonoBehaviour
 
 			Destroy(other.gameObject);
 
-			nextSound = hitSound;
-		}
+			gameController.GetComponent<GameController>().audioSource.Stop();
+			gameController.GetComponent<GameController>().audioSource.PlayOneShot(gameController.GetComponent<GameController>().hitSound);
+        }
 	}
 
 	void SpawnBodySegment(int hitpoints)
@@ -267,6 +259,7 @@ public class PlayerController : MonoBehaviour
 			}
 
 			newPiece.GetComponent<PlayerFollower>().player = this.gameObject;
+			newPiece.GetComponent<PlayerFollower>().gameController = gameController;
 			bodyPieces.Add(newPiece);
 
 			hitpoints -= 30;

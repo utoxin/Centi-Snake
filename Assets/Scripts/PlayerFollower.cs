@@ -10,6 +10,8 @@ public class PlayerFollower : MonoBehaviour
 
 	public Sprite[] healthImages;
 
+	public GameObject gameController;
+
 	public void SetHitpoints(int hitpoints)
 	{
 		if (hitpoints == 0)
@@ -32,7 +34,8 @@ public class PlayerFollower : MonoBehaviour
 			Destroy(other.gameObject);
 			SetHitpoints(currentHealth - healthtaken);
 
-			player.GetComponent<PlayerController>().nextSound = player.GetComponent<PlayerController>().hitSound;
+			gameController.GetComponent<GameController>().audioSource.Stop();
+            gameController.GetComponent<GameController>().audioSource.PlayOneShot(gameController.GetComponent<GameController>().hitSound);
 		}
 	}
 }
