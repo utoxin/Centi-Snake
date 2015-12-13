@@ -31,6 +31,7 @@ public class EnemyController : MonoBehaviour
 		RectTransform bulletTransform = bullet.GetComponent<RectTransform>();
 
 		bulletTransform.SetParent(myRectTransform.parent);
+		bulletTransform.localScale = new Vector3(1,1,1);
 
 		bulletTransform.Rotate(Vector3.forward, bulletRotation);
 

@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour
 			int enemyIndex = Random.Range(0, enemyPrefabs.Length);
 			GameObject enemy = Instantiate(enemyPrefabs[enemyIndex]);
 			enemy.GetComponent<RectTransform>().SetParent(gameArea.GetComponent<RectTransform>());
+			enemy.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
 
 			Time.timeScale += 0.05f;
 
@@ -51,6 +52,7 @@ public class GameController : MonoBehaviour
 		{
 			GameObject food = Instantiate(foodPrefab);
 			food.GetComponent<RectTransform>().SetParent(gameArea.GetComponent<RectTransform>());
-		}
+			food.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
+        }
 	}
 }
