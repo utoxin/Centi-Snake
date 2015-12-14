@@ -81,16 +81,14 @@ public class PlayerController : MonoBehaviour
 				clearRemaning = true;
 				if (bodyPieces[i] != null)
 				{
-					if (Random.Range(0, 2) == 1)
-					{
-						// Transform pieces into blocks (50% odds)
-						RectTransform pieceTransform = bodyPieces[i].GetComponent<RectTransform>();
+					// Transform pieces into blocks (50% odds)
+					RectTransform pieceTransform = bodyPieces[i].GetComponent<RectTransform>();
 
-						GameObject newBlock = Instantiate(GameData.instance.blockPrefab);
-						RectTransform blockTransform = newBlock.GetComponent<RectTransform>();
-						blockTransform.SetParent(pieceTransform.parent);
-						blockTransform.anchoredPosition3D = pieceTransform.anchoredPosition3D;
-					}
+					GameObject newBlock = Instantiate(GameData.instance.blockPrefab);
+					RectTransform blockTransform = newBlock.GetComponent<RectTransform>();
+					blockTransform.SetParent(pieceTransform.parent);
+					blockTransform.anchoredPosition3D = pieceTransform.anchoredPosition3D;
+					blockTransform.localScale = new Vector3(1,1,1);
 
 					Destroy(bodyPieces[i]);
 				}
@@ -102,7 +100,12 @@ public class PlayerController : MonoBehaviour
 				addScore += bodyPieces[i].GetComponent<PlayerFollower>().currentHealth;
 			}
 		}
-		bodyPieces = newPieces;
+
+		bodyPieces = new List<GameObject>();
+		foreach (GameObject piece in newPieces)
+		{
+			bodyPieces.Add(piece);
+		}
 
 		// Add the new score, and update high score
 		GameData.instance.score += addScore;
@@ -128,7 +131,7 @@ public class PlayerController : MonoBehaviour
 		// If dead, return to start screen
 		if (currentHealth <= 0)
 		{
-			SceneManager.LoadScene(0);
+			EndGame();
 		}
 
 		// Trim location list to max size required
@@ -150,8 +153,14 @@ public class PlayerController : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			SceneManager.LoadScene(0);
+			EndGame();
 		}
+	}
+
+	void EndGame()
+	{
+		GameData.instance.score = 0;
+		SceneManager.LoadScene(0);
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
