@@ -160,6 +160,8 @@ public class PlayerController : MonoBehaviour
 	void EndGame()
 	{
 		GameData.instance.score = 0;
+		Time.fixedDeltaTime = 0.05f;
+		Time.timeScale = 1f;
 		SceneManager.LoadScene(0);
 	}
 

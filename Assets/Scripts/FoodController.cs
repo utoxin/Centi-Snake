@@ -42,5 +42,17 @@ public class FoodController : MonoBehaviour
 		Debug.Log(fruitIndex);
         gameObject.GetComponent<Image>().sprite = fruitSprites[fruitIndex];
 		hitpointsGranted = (fruitIndex + 1)*10;
+
+		if (fruitIndex >= 4 && gameObject.GetComponent<ColorController>() != null)
+		{
+			gameObject.GetComponent<ColorController>().hueShift = 55;
+			gameObject.GetComponent<ColorController>().ignoreSaturation = true;
+		}
+		else
+		{
+			gameObject.GetComponent<ColorController>().hueShift = 0;
+			gameObject.GetComponent<ColorController>().ignoreSaturation = false;
+		}
+
 	}
 }
