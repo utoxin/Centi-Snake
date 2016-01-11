@@ -1,20 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.ImageEffects;
 
 public class GameData : MonoBehaviour {
 	public static GameData instance;
-	public Text highScoreText;
-	public Text player1Text;
-	public int score;
 	public GameObject blockPrefab;
-
-	public int movementStep = 16;
-	public int maxCoord = 248;
+	public float brightness;
 	public int gamePhase = 1;
+	public Text highScoreText;
 
 	public float hue;
+
+	private Camera mainCamera;
+	public int maxCoord = 248;
+
+	public int movementStep = 16;
+	public Text player1Text;
 	public float saturation;
-	public float brightness;
+	public int score;
+	public bool screenfx;
+	public float volume;
 
 	void Awake() {
 		if (instance == null) {
@@ -33,12 +38,11 @@ public class GameData : MonoBehaviour {
 			ColorChildren(parent);
 		}
 
-		GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().backgroundColor = GetColor(true);
+		instance.mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 	}
 
 	// Update is called once per frame
-	void FixedUpdate ()
-	{
+	void FixedUpdate() {
 		if (GameObject.FindGameObjectWithTag("HighScoreText") != null) {
 			highScoreText = GameObject.FindGameObjectWithTag("HighScoreText").GetComponent<Text>();
 			Time.timeScale = 1;
@@ -56,35 +60,46 @@ public class GameData : MonoBehaviour {
 		}
 
 		GameObject parent = GameObject.FindGameObjectWithTag("ColorSpace");
-		if (parent != null)
-		{
+		if (parent != null) {
+			parent.GetComponent<Canvas>().worldCamera = instance.mainCamera;
 			ColorChildren(parent);
+		}
+
+		GameObject controller = GameObject.FindGameObjectWithTag("GameController");
+		if (controller != null) {
+			controller.GetComponent<AudioSource>().volume = instance.volume / 100;
+		}
+
+		if (instance.mainCamera != null) {
+			instance.mainCamera.backgroundColor = GetColor(true);
+
+			if (instance.screenfx && instance.mainCamera.GetComponent<CRTEffect>().enabled == false) {
+				instance.mainCamera.GetComponent<CRTEffect>().enabled = true;
+				instance.mainCamera.GetComponent<NoiseAndGrain>().enabled = true;
+				instance.mainCamera.GetComponent<VignetteAndChromaticAberration>().enabled = true;
+			} else if (instance.screenfx == false && instance.mainCamera.GetComponent<CRTEffect>().enabled) {
+				instance.mainCamera.GetComponent<CRTEffect>().enabled = false;
+				instance.mainCamera.GetComponent<NoiseAndGrain>().enabled = false;
+				instance.mainCamera.GetComponent<VignetteAndChromaticAberration>().enabled = false;
+			}
 		}
 	}
 
-	private void ColorChildren(GameObject parent)
-	{
-		foreach (Transform child in parent.transform)
-		{
+	private void ColorChildren(GameObject parent) {
+		foreach (Transform child in parent.transform) {
 			Color newColor;
-			if (child.gameObject.GetComponent<ColorController>() != null)
-			{
+			if (child.gameObject.GetComponent<ColorController>() != null) {
 				newColor = child.gameObject.GetComponent<ColorController>().GetColor();
-			}
-			else
-			{
+			} else {
 				newColor = GetColor(false);
 			}
 
-			if (child.gameObject.GetComponent<Button>() == null)
-			{
-				foreach (Text text in child.gameObject.GetComponents<Text>())
-				{
+			if (child.gameObject.GetComponent<Button>() == null) {
+				foreach (Text text in child.gameObject.GetComponents<Text>()) {
 					text.color = newColor;
 				}
 
-				foreach (Image image in child.gameObject.GetComponents<Image>())
-				{
+				foreach (Image image in child.gameObject.GetComponents<Image>()) {
 					image.color = newColor;
 				}
 			}
@@ -93,17 +108,17 @@ public class GameData : MonoBehaviour {
 		}
 	}
 
-	private void LoadPrefs()
-	{
+	private void LoadPrefs() {
 		hue = PlayerPrefs.GetFloat("hue", 113f);
 		saturation = PlayerPrefs.GetFloat("saturation", 100);
 		brightness = PlayerPrefs.GetFloat("brightness", 100);
+		volume = PlayerPrefs.GetFloat("volume", 50);
+		screenfx = PlayerPrefs.GetInt("screenfx", 1) == 1;
 	}
 
 	public void StoreHighscore(int newHighscore) {
 		int oldHighscore = PlayerPrefs.GetInt("highscore", 0);
-		if (newHighscore > oldHighscore)
-		{
+		if (newHighscore > oldHighscore) {
 			PlayerPrefs.SetInt("highscore", newHighscore);
 		}
 	}
@@ -115,9 +130,8 @@ public class GameData : MonoBehaviour {
 		float s = instance.saturation / 100f;
 		float v = instance.brightness / 100f;
 
-		if (shadeForBG)
-		{
-			v *= 0.1f;
+		if (shadeForBG) {
+			v *= 0.2f;
 		}
 
 		if (Mathf.Abs(s) <= 0.001f) {

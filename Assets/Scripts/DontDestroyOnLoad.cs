@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 public class DontDestroyOnLoad : MonoBehaviour {
-
 	public static DontDestroyOnLoad instance;
 
 	void Awake() {

@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class DamageController : MonoBehaviour
-{
+public class DamageController : MonoBehaviour {
 	public int hitpointsTaken;
 	private RectTransform myRectTransform;
 
@@ -10,8 +8,7 @@ public class DamageController : MonoBehaviour
 		myRectTransform = gameObject.GetComponent<RectTransform>();
 	}
 
-	void FixedUpdate()
-	{
+	void FixedUpdate() {
 		// Move forward one step
 		Vector3 newPosition = myRectTransform.anchoredPosition3D + gameObject.transform.up * GameData.instance.movementStep;
 		newPosition.x = Mathf.RoundToInt(newPosition.x);
@@ -23,17 +20,12 @@ public class DamageController : MonoBehaviour
 			RectTransform checkTransform = check.GetComponent<RectTransform>();
 			if (checkTransform != null && checkTransform.anchoredPosition3D == newPosition) {
 				if (!check.GetComponent<PlayerController>() && !check.GetComponent<PlayerFollower>()) {
-					if (check.GetComponent<FoodController>())
-					{
-						if (check.GetComponent<EnemyController>())
-						{
+					if (check.GetComponent<FoodController>()) {
+						if (check.GetComponent<EnemyController>()) {
 							check.GetComponent<EnemyController>().randomPosition();
-                        }
-						else if (check.GetComponent<FoodController>())
-						{
+						} else if (check.GetComponent<FoodController>()) {
 							check.GetComponent<FoodController>().randomPosition();
-						} else
-						{
+						} else {
 							Destroy(check);
 						}
 					}
@@ -44,17 +36,14 @@ public class DamageController : MonoBehaviour
 			}
 		}
 
-		if (!foundHit)
-		{
+		if (!foundHit) {
 			myRectTransform.anchoredPosition3D = newPosition;
-		}
-		else
-		{
+		} else {
 			Destroy(gameObject);
 		}
 
-		if (Mathf.Abs(myRectTransform.anchoredPosition3D.x) > GameData.instance.maxCoord || Mathf.Abs(myRectTransform.anchoredPosition3D.y) > GameData.instance.maxCoord)
-		{
+		if (Mathf.Abs(myRectTransform.anchoredPosition3D.x) > GameData.instance.maxCoord ||
+			Mathf.Abs(myRectTransform.anchoredPosition3D.y) > GameData.instance.maxCoord) {
 			Destroy(gameObject);
 		}
 	}

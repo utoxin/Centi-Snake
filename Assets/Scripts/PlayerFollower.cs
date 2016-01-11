@@ -1,28 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerFollower : MonoBehaviour
-{
+public class PlayerFollower : MonoBehaviour {
 	public int currentHealth;
+
+	public GameObject gameController;
+
+	public Sprite[] healthImages;
 	public int maxHealth;
 
 	public GameObject player;
 
-	public Sprite[] healthImages;
-
-	public GameObject gameController;
-
-	public void SetHitpoints(int hitpoints)
-	{
-		if (hitpoints == 0)
-		{
+	public void SetHitpoints(int hitpoints) {
+		if (hitpoints == 0) {
 			Destroy(gameObject);
 			return;
 		}
 
 		currentHealth = Mathf.Clamp(hitpoints, 0, maxHealth);
 
-		int index = Mathf.Clamp((hitpoints/10) - 1, 0, 2);
+		int index = Mathf.Clamp((hitpoints / 10) - 1, 0, 2);
 		gameObject.GetComponent<Image>().sprite = healthImages[index];
 	}
 
@@ -35,7 +32,8 @@ public class PlayerFollower : MonoBehaviour
 			SetHitpoints(currentHealth - healthtaken);
 
 			gameController.GetComponent<GameController>().audioSource.Stop();
-            gameController.GetComponent<GameController>().audioSource.PlayOneShot(gameController.GetComponent<GameController>().hitSound);
+			gameController.GetComponent<GameController>()
+				.audioSource.PlayOneShot(gameController.GetComponent<GameController>().hitSound);
 		}
 	}
 }

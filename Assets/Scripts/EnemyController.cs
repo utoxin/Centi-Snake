@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 
-public class EnemyController : MonoBehaviour
-{
+public class EnemyController : MonoBehaviour {
 	public GameObject bulletPrefab;
-	public int fireInterval;
+	private int bulletRotation;
 
 	private int fireCounter = 0;
-	private int bulletRotation;
+	public int fireInterval;
 	private RectTransform myRectTransform;
 
 	void Start() {
@@ -14,31 +13,29 @@ public class EnemyController : MonoBehaviour
 		randomPosition();
 	}
 
-	void FixedUpdate()
-	{
+	void FixedUpdate() {
 		fireCounter++;
 
-		if (fireCounter >= fireInterval)
-		{
+		if (fireCounter >= fireInterval) {
 			fireCounter = 0;
 			fireShot();
 		}
 	}
 
-	void fireShot()
-	{
+	void fireShot() {
 		GameObject bullet = Instantiate(bulletPrefab);
 		RectTransform bulletTransform = bullet.GetComponent<RectTransform>();
 
 		bulletTransform.SetParent(myRectTransform.parent);
-		bulletTransform.localScale = new Vector3(1,1,1);
+		bulletTransform.localScale = new Vector3(1, 1, 1);
 
 		bulletTransform.Rotate(Vector3.forward, bulletRotation);
 
 		bulletTransform.anchoredPosition3D = myRectTransform.anchoredPosition3D;
-//		bulletTransform.anchoredPosition3D += bulletTransform.up * GameData.instance.movementStep;
+		//		bulletTransform.anchoredPosition3D += bulletTransform.up * GameData.instance.movementStep;
 
-		if (Mathf.Abs(bulletTransform.anchoredPosition3D.x) > GameData.instance.maxCoord || Mathf.Abs(bulletTransform.anchoredPosition3D.y) > GameData.instance.maxCoord) {
+		if (Mathf.Abs(bulletTransform.anchoredPosition3D.x) > GameData.instance.maxCoord ||
+			Mathf.Abs(bulletTransform.anchoredPosition3D.y) > GameData.instance.maxCoord) {
 			Destroy(bullet);
 			bulletRotation = 90 * Random.Range(0, 4);
 			fireShot();
@@ -65,7 +62,7 @@ public class EnemyController : MonoBehaviour
 
 		gameObject.GetComponent<RectTransform>().anchoredPosition3D = newPosition;
 
-		bulletRotation = 90*Random.Range(0, 4);
+		bulletRotation = 90 * Random.Range(0, 4);
 		fireCounter = 0;
 	}
 }
